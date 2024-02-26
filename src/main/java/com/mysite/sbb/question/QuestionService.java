@@ -31,7 +31,7 @@ public class QuestionService {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Predicate toPredicate(Root<Question> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
-				query.distinct(true);
+				query.distinct(true);  // 중복을 제거
 				Join<Question, SiteUser> u1 = q.join("author", JoinType.LEFT);
 				Join<Question, Answer> a = q.join("answerList", JoinType.LEFT);
 				Join<Answer, SiteUser> u2 = a.join("author", JoinType.LEFT);
@@ -47,8 +47,7 @@ public class QuestionService {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-		Specification<Question> spec = search(kw);
-        return this.questionRepository.findAll(spec,pageable);
+        return this.questionRepository.findAllByKeyword(kw, pageable);
     }
 
 	public Question getQuestion(Integer id) {
